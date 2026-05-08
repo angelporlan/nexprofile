@@ -7,7 +7,6 @@ import {
   Loader2,
   PencilLine,
   Plus,
-  RefreshCcw,
   Save,
   Search,
   Trash2
@@ -306,16 +305,6 @@ export function LibraryPage() {
                     </select>
                   </label>
                 </div>
-
-                <div className="space-y-2 rounded-lg border border-line bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-semibold">Contenido</p>
-                    <button className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-ink dark:text-slate-300 dark:hover:text-white" type="button" onClick={() => loadCv.mutate(selectedCv.id)} disabled={loadCv.isPending}>
-                      <RefreshCcw size={13} /> Abrir en editor
-                    </button>
-                  </div>
-                    <p className="text-xs leading-5 text-slate-500 line-clamp-5 dark:text-slate-400">{currentContent || 'Sin contenido cargado'}</p>
-                  </div>
 
                 <div className="grid gap-2 sm:grid-cols-2">
                   <button className="button-secondary" type="button" onClick={handleSaveMetadata} disabled={updateCv.isPending}>
