@@ -96,17 +96,30 @@ export function LibraryPage() {
   const loadCv = useMutation({
     mutationFn: (id: number) => api.getCv(id),
     onSuccess: (payload) => {
-      setSelectedDetail(payload.cv);
-      setMarkdown(payload.cv.content);
-      setSelectedCvId(payload.cv.id);
-      if (payload.cv.template) {
-        setDesign({ template: payload.cv.template as VisualTemplate });
-      }
-      setNotice(`CV "${payload.cv.name}" cargado en el editor`);
-      navigate('/');
+      openCvInEditor(payload.cv);
     },
     onError: (error) => setNotice(getErrorMessage(error))
   });
+
+  const openCvInEditor = (cv: Cv) => {
+    setSelectedDetail(cv);
+    setMarkdown(cv.content);
+    setSelectedCvId(cv.id);
+    if (cv.template) {
+      setDesign({ template: cv.template as VisualTemplate });
+    }
+    setNotice(`CV "${cv.name}" cargado en el editor`);
+    navigate('/');
+  };
+
+  const handleOpenInEditor = (cv: CvSummary) => {
+    if (selectedDetail?.id === cv.id) {
+      openCvInEditor(selectedDetail);
+      return;
+    }
+
+    loadCv.mutate(cv.id);
+  };
 
   const updateCv = useMutation({
     mutationFn: ({ id, input }: { id: number; input: Partial<Cv> }) => api.updateCv(id, input),
@@ -243,7 +256,7 @@ export function LibraryPage() {
                     setSelectedId(cv.id);
                     viewCv.mutate(cv.id);
                   }}
-                  onOpenEditor={() => loadCv.mutate(cv.id)}
+                  onOpenEditor={() => handleOpenInEditor(cv)}
                   onDelete={() => setDeleteTarget(cv)}
                 />
               ))}
@@ -322,7 +335,7 @@ export function LibraryPage() {
                 </div>
 
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <button className="button-secondary" type="button" onClick={() => loadCv.mutate(selectedCv.id)} disabled={loadCv.isPending}>
+                  <button className="button-secondary" type="button" onClick={() => handleOpenInEditor(selectedCv)} disabled={loadCv.isPending}>
                     <FileText size={15} />
                     Abrir en editor
                   </button>
